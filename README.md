@@ -1,31 +1,30 @@
-已按您的要求修改，现在系统会根据上传CT影像的实际内容动态检测病变区域，位置与真实影像特征相关，不再使用固定坐标。
-
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>肺癌CT影像分析系统 / 폐암 CT 영상 분석 시스템</title>
+    <title>물리치료A WANG TIANLU 202217132 - 数字健康医疗·产业安全</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+    </script>
     <style>
         :root {
-            --bg: #f0f4f8;
+            --bg: #f4f7fc;
             --card-bg: #ffffff;
-            --primary: #1a3c5e;
-            --primary-light: #2c5f8a;
-            --accent: #e74c3c;
-            --accent-orange: #e67e22;
-            --accent-blue: #2980b9;
-            --accent-yellow: #d4a017;
-            --text: #2c3e50;
-            --text-light: #5a6c7d;
-            --border: #dce3ea;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --primary: #0066cc;
+            --primary-dark: #004b99;
+            --accent: #00a8cc;
+            --danger: #d63031;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --border: #dfe6e9;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
             --radius: 16px;
             --radius-sm: 10px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-zh: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
-            --font-ko: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+            --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans KR', sans-serif;
+            --transition: 0.2s ease;
         }
 
         * {
@@ -35,1162 +34,782 @@
         }
 
         body {
-            font-family: var(--font-zh), var(--font-ko), sans-serif;
-            background: linear-gradient(135deg, #e8eef5 0%, #dce3ed 30%, #eef2f7 60%, #e3eaf3 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
+            font-family: var(--font);
+            background: linear-gradient(135deg, #eef2f7 0%, #f8faff 100%);
             color: var(--text);
             line-height: 1.6;
+            min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -30%;
-            width: 160%;
-            height: 160%;
-            background:
-                radial-gradient(ellipse at 25% 20%, rgba(26, 60, 94, 0.04) 0%, transparent 55%),
-                radial-gradient(ellipse at 70% 65%, rgba(41, 128, 185, 0.05) 0%, transparent 55%),
-                radial-gradient(ellipse at 40% 75%, rgba(231, 76, 60, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+        /* 顶部导航 */
+        .top-bar {
+            background: linear-gradient(105deg, #0b1a2f 0%, #132b44 100%);
+            color: #fff;
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         }
-
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px 24px 40px;
-            position: relative;
-            z-index: 1;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-
-        /* 个人信息栏 */
-        .student-info-bar {
-            text-align: center;
-            padding: 14px 20px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #1a3c5e 0%, #2c5f8a 100%);
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 17px;
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00a8cc, #0066cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 0 18px rgba(0, 168, 204, 0.5);
+            animation: soft-pulse 3s infinite;
+        }
+        @keyframes soft-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 12px rgba(0, 168, 204, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(0, 168, 204, 0.8);
+            }
+        }
+        .brand-text .main-title {
             font-weight: 700;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 16px rgba(26, 60, 94, 0.3);
-            font-family: var(--font-ko), var(--font-zh), sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
         }
-        .student-info-bar .student-icon {
-            display: inline-block;
-            margin-right: 8px;
-            font-size: 20px;
+        .brand-text .sub-info {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            letter-spacing: 0.4px;
         }
-
-        .header {
-            text-align: center;
-            padding: 28px 20px 20px;
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .header .logo-icon {
-            display: inline-block;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #1a3c5e, #2c5f8a);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 8px 24px rgba(26, 60, 94, 0.25);
-            position: relative;
+        .lang-switch {
+            display: flex;
+            border-radius: 30px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
-        .header .logo-icon::after {
-            content: '🫁';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 26px;
-            filter: brightness(1.3);
-        }
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: -0.3px;
-            margin: 0;
-        }
-        .header .subtitle {
-            font-size: 14px;
-            color: var(--text-light);
-            margin-top: 4px;
+        .lang-switch button {
+            padding: 8px 18px;
+            border: none;
+            background: transparent;
+            color: #ddd;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
             letter-spacing: 0.5px;
         }
-
-        .lang-switch-wrap {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .lang-btn {
-            padding: 9px 22px;
-            border-radius: 24px;
-            border: 2px solid var(--border);
-            background: var(--card-bg);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            transition: var(--transition);
-            color: var(--text-light);
-            white-space: nowrap;
-            font-family: inherit;
-        }
-        .lang-btn:hover {
-            border-color: var(--primary-light);
-            color: var(--primary);
-            box-shadow: 0 2px 12px rgba(26, 60, 94, 0.1);
-        }
-        .lang-btn.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 4px 16px rgba(26, 60, 94, 0.3);
-        }
-        .lang-btn .flag-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 6px;
-            vertical-align: middle;
-            position: relative;
-            top: -1px;
-        }
-        .lang-btn.active .flag-dot {
+        .lang-switch button.active {
             background: #fff;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+            color: #0b1a2f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
-        .lang-btn:not(.active) .flag-dot {
-            background: #b0bec5;
+        .lang-switch button:hover:not(.active) {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .btn-download {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #d63031, #b71c1c);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.35);
+            font-family: var(--font);
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(214, 48, 49, 0.5);
+        }
+        .btn-download svg {
+            width: 18px;
+            height: 18px;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 12px;
+        /* 浮动下载按钮 */
+        .float-download {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #d63031;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(214, 48, 49, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: transform 0.2s ease;
+            color: #fff;
         }
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-                max-width: 700px;
-                margin-left: auto;
-                margin-right: auto;
-            }
+        .float-download:hover {
+            transform: scale(1.08);
         }
-        @media (max-width: 600px) {
-            .app-container {
-                padding: 10px 10px 30px;
-            }
-            .header h1 {
-                font-size: 22px;
-            }
-            .header {
-                padding: 18px 10px 10px;
-            }
-            .main-grid {
-                gap: 14px;
-            }
-            .student-info-bar {
-                font-size: 14px;
-                padding: 10px 14px;
-            }
+        .float-download svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* PDF生成时隐藏按钮 */
+        .hide-in-pdf {
+            /* 用于在PDF捕获前隐藏的类 */
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 30px 20px 40px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0b1a2f, #0066cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        .page-header .subtitle {
+            color: #636e72;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 28px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            margin-bottom: 24px;
             transition: var(--transition);
         }
         .card:hover {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
         }
-        .card-title {
-            font-size: 17px;
+        .card-header {
             font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 16px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+            color: #0b1a2f;
         }
-        .card-title .icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        .icon-upload {
-            background: #e8f4fd;
-            color: #2980b9;
-        }
-        .icon-result {
-            background: #fdeaea;
-            color: #c0392b;
-        }
-
-        .upload-zone {
-            border: 2.5px dashed #c5cdd8;
-            border-radius: var(--radius-sm);
-            padding: 50px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            background: #fafbfc;
-            position: relative;
-            min-height: 220px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .upload-zone:hover,
-        .upload-zone.drag-over {
-            border-color: var(--primary-light);
-            background: #f0f6fb;
-            box-shadow: inset 0 0 0 4px rgba(44, 95, 138, 0.04);
-        }
-        .upload-zone.drag-over {
-            border-color: var(--accent);
-            background: #fef9f8;
-            animation: pulse-border 1.2s ease-in-out infinite;
-        }
-        @keyframes pulse-border {
-            0%,
-            100% {
-                border-color: #c5cdd8;
-            }
-            50% {
-                border-color: var(--accent);
-                box-shadow: 0 0 0 12px rgba(231, 76, 60, 0.06);
-            }
-        }
-        .upload-icon {
-            font-size: 52px;
-            opacity: 0.7;
-            transition: var(--transition);
-        }
-        .upload-zone:hover .upload-icon {
-            opacity: 1;
-            transform: translateY(-4px);
-        }
-        .upload-text {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text);
-        }
-        .upload-hint {
-            font-size: 12px;
-            color: #8899aa;
-        }
-        .upload-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .image-display-area {
-            position: relative;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            background: #0a0f14;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .image-display-area canvas {
-            display: block;
-            max-width: 100%;
-            height: auto;
-            border-radius: var(--radius-sm);
-        }
-        .no-image-placeholder {
-            color: #556;
-            font-size: 14px;
-            text-align: center;
-            padding: 60px 20px;
-            opacity: 0.6;
-        }
-        .no-image-placeholder .ph-icon {
-            font-size: 60px;
-            display: block;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
-        .analyzing-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(10, 15, 20, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-sm);
-            z-index: 5;
-        }
-        .analyzing-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top-color: #fff;
+        .card-header .dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 14px;
+            background: var(--accent);
         }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 850px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                padding: 10px 16px;
+            }
+            .page-header h1 {
+                font-size: 1.5rem;
             }
         }
-        .analyzing-text {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-        }
 
-        .legend-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 12px;
-            padding: 10px 14px;
-            background: #f8f9fb;
-            border-radius: 8px;
-            font-size: 12px;
+        .form-group {
+            margin-bottom: 18px;
         }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-            flex-shrink: 0;
-            border: 2px solid;
-        }
-        .legend-dot.high {
-            background: rgba(231, 76, 60, 0.35);
-            border-color: #e74c3c;
-        }
-        .legend-dot.medium {
-            background: rgba(230, 126, 34, 0.3);
-            border-color: #e67e22;
-        }
-        .legend-dot.low {
-            background: rgba(41, 128, 185, 0.25);
-            border-color: #2980b9;
-        }
-        .legend-dot.follow {
-            background: rgba(212, 160, 23, 0.3);
-            border-color: #d4a017;
-        }
-
-        .result-summary {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-        .summary-badge {
-            flex: 1;
-            min-width: 80px;
-            padding: 14px 12px;
-            border-radius: var(--radius-sm);
-            text-align: center;
-            font-weight: 700;
-        }
-        .summary-badge.danger {
-            background: #fef5f4;
-            color: #c0392b;
-            border: 1.5px solid #f5c6cb;
-        }
-        .summary-badge.warning {
-            background: #fefaf3;
-            color: #b8731f;
-            border: 1.5px solid #fce4c5;
-        }
-        .summary-badge.info {
-            background: #f4f8fc;
-            color: #1a5c8a;
-            border: 1.5px solid #d0e2f2;
-        }
-        .summary-badge .num {
-            font-size: 28px;
+        .form-group label {
             display: block;
-            line-height: 1;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #2d3436;
         }
-        .summary-badge .lbl {
-            font-size: 11px;
-            margin-top: 4px;
-            opacity: 0.85;
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            transition: 0.2s;
+            background: #fafbfc;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.08);
+            background: #fff;
+        }
+        .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            background: linear-gradient(135deg, #0066cc, #004b99);
+            color: #fff;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(0, 102, 204, 0.45);
         }
 
-        .lesion-detail-card {
-            background: #fafbfc;
+        .result-area {
+            min-height: 240px;
+            border: 2px dashed #dfe6e9;
             border-radius: var(--radius-sm);
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            border-left: 5px solid #ccc;
-            transition: var(--transition);
-        }
-        .lesion-detail-card:hover {
-            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
-            transform: translateX(2px);
-        }
-        .lesion-detail-card.risk-high {
-            border-left-color: #e74c3c;
-            background: #fef9f8;
-        }
-        .lesion-detail-card.risk-medium {
-            border-left-color: #e67e22;
-            background: #fefcf7;
-        }
-        .lesion-detail-card.risk-low {
-            border-left-color: #2980b9;
-            background: #f8fafc;
-        }
-        .lesion-detail-card.risk-follow {
-            border-left-color: #d4a017;
-            background: #fefdf7;
-        }
-        .lesion-header {
+            padding: 20px;
+            background: #fafcfd;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 6px;
+            justify-content: center;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
-        .lesion-name {
+        .result-area.has-data {
+            border-style: solid;
+            border-color: #00b894;
+            background: #f6fef9;
+            color: #2d3436;
+            text-align: left;
+            display: block;
+        }
+        .result-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eef2f6;
+            font-size: 0.9rem;
+        }
+        .badge-risk {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
             font-weight: 700;
-            font-size: 14px;
-        }
-        .lesion-badge {
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-        .badge-high {
-            background: #fde2e0;
-            color: #a93226;
-        }
-        .badge-medium {
-            background: #fdebd0;
-            color: #935d1b;
+            font-size: 0.8rem;
         }
         .badge-low {
-            background: #d6eaf8;
-            color: #1a5276;
+            background: #d4edda;
+            color: #155724;
         }
-        .badge-follow {
-            background: #fef9e7;
-            color: #7d6608;
+        .badge-medium {
+            background: #fff3cd;
+            color: #856404;
         }
-        .lesion-info {
-            font-size: 12px;
-            color: var(--text-light);
-            line-height: 1.5;
-        }
-        .lesion-info span {
-            margin-right: 12px;
-            white-space: nowrap;
-        }
-        .lesion-info .val {
-            font-weight: 600;
-            color: var(--text);
+        .badge-high {
+            background: #f8d7da;
+            color: #721c24;
         }
 
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 16px;
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 10px;
         }
-        .btn {
-            padding: 10px 20px;
-            border-radius: 24px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: var(--transition);
-            font-family: inherit;
-            white-space: nowrap;
-        }
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(26, 60, 94, 0.3);
-        }
-        .btn-primary:hover {
-            background: #1f4970;
-            box-shadow: 0 6px 20px rgba(26, 60, 94, 0.4);
-            transform: translateY(-1px);
-        }
-        .btn-outline {
-            background: #fff;
-            color: var(--primary);
-            border: 2px solid var(--border);
-        }
-        .btn-outline:hover {
-            border-color: var(--primary-light);
-            background: #f8fafc;
-        }
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        .disclaimer {
-            margin-top: 14px;
-            padding: 12px 16px;
-            background: #fffdf5;
-            border-radius: 8px;
-            font-size: 11px;
-            color: #8a7d3c;
-            border: 1px solid #f0e8c0;
-            text-align: center;
-        }
-        .disclaimer strong {
-            color: #b8860b;
-        }
-
-        @media print {
-            body {
-                background: #fff;
-            }
-            .btn-row,
-            .lang-switch-wrap,
-            .upload-zone,
-            .btn,
-            .disclaimer,
-            .student-info-bar {
-                display: none !important;
-            }
-            .main-grid {
+        @media (max-width: 700px) {
+            .info-grid {
                 grid-template-columns: 1fr;
-                gap: 8px;
             }
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                page-break-inside: avoid;
+        }
+        .info-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 22px;
+            border-left: 5px solid var(--accent);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            font-size: 0.85rem;
+        }
+        .info-card h3 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #0b1a2f;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.75rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3436;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 2000;
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
             }
-            .image-display-area {
-                background: #fff;
-                max-height: 400px;
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
             }
+        }
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
+
+        .pain-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pain-slider-container input {
+            flex: 1;
+        }
+        .pain-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #d63031;
+            min-width: 35px;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <div class="student-info-bar">
-            <span class="student-icon">🎓</span> 물리치료 A반 &nbsp; 왕천로 &nbsp; 202217132
-        </div>
-
-        <div class="header">
-            <div class="logo-icon"></div>
-            <h1 data-i18n="appTitle">肺癌CT影像智能分析系统</h1>
-            <p class="subtitle" data-i18n="appSubtitle">AI辅助诊断 · 病变区域自动标注 · 病理特征分析</p>
-            <div class="lang-switch-wrap">
-                <button class="lang-btn active" data-lang="zh" onclick="switchLanguage('zh')">
-                    <span class="flag-dot"></span> 中文
-                </button>
-                <button class="lang-btn" data-lang="ko" onclick="switchLanguage('ko')">
-                    <span class="flag-dot"></span> 한국어
-                </button>
+    <header class="top-bar">
+        <div class="brand">
+            <div class="brand-icon">🩺</div>
+            <div class="brand-text">
+                <div class="main-title">물리치료A WANG TIANLU 202217132</div>
+                <div class="sub-info" data-i18n="brand_sub">数字健康医疗 · 产业安全平台</div>
             </div>
         </div>
+        <div class="top-actions">
+            <div class="lang-switch" id="langSwitch">
+                <button data-lang="zh" class="active">🇨🇳 中文</button>
+                <button data-lang="ko">🇰🇷 한국어</button>
+            </div>
+            <button class="btn-download hide-in-pdf" onclick="downloadPDF()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span data-i18n="download_btn">下载PDF</span>
+            </button>
+        </div>
+    </header>
 
-        <div class="main-grid">
+    <div class="main-container" id="pdfCaptureArea">
+        <div class="page-header">
+            <h1>물리치료A WANG TIANLU 202217132</h1>
+            <p class="subtitle" data-i18n="page_subtitle">数字健康医疗产业安全管理系统 / 디지털 헬스케어 산업안전 관리 시스템</p>
+        </div>
+
+        <div class="two-col">
             <div class="card">
-                <div class="card-title">
-                    <span class="icon icon-upload">📋</span>
-                    <span data-i18n="uploadTitle">上传CT影像</span>
-                </div>
-                <div class="upload-zone" id="uploadZone">
-                    <span class="upload-icon">🖼️</span>
-                    <span class="upload-text" data-i18n="uploadText">点击或拖拽上传CT影像图片</span>
-                    <span class="upload-hint" data-i18n="uploadHint">支持 JPG / PNG / DICOM截图 格式</span>
-                    <input type="file" id="fileInput" accept="image/*">
-                </div>
-                <div class="image-display-area" id="imageDisplayArea">
-                    <div class="no-image-placeholder" id="noImagePlaceholder">
-                        <span class="ph-icon">🫁</span>
-                        <span data-i18n="noImage">请上传CT影像图片以进行分析</span>
+                <div class="card-header"><span class="dot"></span> <span data-i18n="form_title">患者数据输入</span></div>
+                <form id="patientForm" onsubmit="return handleSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-i18n="label_name">姓名</label>
+                            <input type="text" id="patientName" placeholder="张三 / 홍길동" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="label_age">年龄</label>
+                            <input type="number" id="patientAge" placeholder="18-99" min="1" max="120" required>
+                        </div>
                     </div>
-                    <canvas id="mainCanvas" style="display:none;"></canvas>
-                    <div class="analyzing-overlay" id="analyzingOverlay" style="display:none;">
-                        <div class="analyzing-spinner"></div>
-                        <span class="analyzing-text" data-i18n="analyzing">AI分析中</span>
-                        <span class="analyzing-dots"></span>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-i18n="label_gender">性别</label>
+                            <select id="patientGender" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="label_pain">疼痛等级 (1-10)</label>
+                            <div class="pain-slider-container">
+                                <input type="range" id="painLevel" min="1" max="10" value="3" oninput="document.getElementById('painDisplay').textContent=this.value">
+                                <span class="pain-value" id="painDisplay">3</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="legend-bar" id="legendBar" style="display:none;">
-                    <span style="font-weight:700;font-size:12px;color:#555;" data-i18n="legendTitle">图例：</span>
-                    <span class="legend-item"><span class="legend-dot high"></span> <span data-i18n="legendHigh">疑似恶性</span></span>
-                    <span class="legend-item"><span class="legend-dot medium"></span> <span data-i18n="legendMedium">磨玻璃结节</span></span>
-                    <span class="legend-item"><span class="legend-dot low"></span> <span data-i18n="legendLow">钙化灶</span></span>
-                    <span class="legend-item"><span class="legend-dot follow"></span> <span data-i18n="legendFollow">实性小结节</span></span>
-                </div>
-                <div class="btn-row">
-                    <button class="btn btn-outline" id="btnReset" onclick="resetAll()" style="display:none;" data-i18n="btnReset">🔄 重新上传</button>
-                    <button class="btn btn-primary" id="btnAnalyze" onclick="triggerAnalysis()" style="display:none;" data-i18n="btnAnalyze">🔍 开始分析</button>
-                    <button class="btn btn-outline" id="btnPrint" onclick="window.print()" style="display:none;" data-i18n="btnPrint">🖨️ 打印报告</button>
-                </div>
+                    <div class="form-group">
+                        <label data-i18n="label_therapy">治疗类型</label>
+                        <select id="therapyType" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="label_symptoms">症状描述</label>
+                        <textarea id="symptoms" rows="3" placeholder="请输入详细症状... / 증상을 입력하세요..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="label_history">既往病史</label>
+                        <input type="text" id="medicalHistory" placeholder="예: 고혈압, 당뇨 / 如：高血压、糖尿病">
+                    </div>
+                    <button type="submit" class="btn-submit" data-i18n="btn_generate">🔍 生成评估结果</button>
+                </form>
             </div>
-
             <div class="card">
-                <div class="card-title">
-                    <span class="icon icon-result">📊</span>
-                    <span data-i18n="resultTitle">分析结果</span>
-                </div>
-                <div id="resultContent">
-                    <p style="color:#8899aa;text-align:center;padding:40px 20px;" data-i18n="noResult">⬅️ 请先上传CT影像并点击分析</p>
-                </div>
-                <div class="disclaimer" data-i18n="disclaimer">
-                    ⚠️ <strong>免责声明：</strong>本系统为AI模拟辅助工具，分析结果仅供学习参考，不能替代专业医师诊断。
+                <div class="card-header"><span class="dot" style="background:#00b894;"></span> <span data-i18n="result_title">评估结果</span></div>
+                <div class="result-area" id="resultArea">
+                    <span data-i18n="result_placeholder">👈 请先输入患者数据并点击生成按钮</span>
                 </div>
             </div>
         </div>
+
+        <div class="info-grid">
+            <div class="info-card"><h3 data-i18n="info1_title">网站设计与开发方法</h3><p data-i18n="info1_content"></p></div>
+            <div class="info-card"><h3 data-i18n="info2_title">主要功能介绍</h3><ul data-i18n="info2_content" style="padding-left:20px;"></ul></div>
+            <div class="info-card"><h3 data-i18n="info3_title">预期效果与应用价值</h3><p data-i18n="info3_content"></p></div>
+            <div class="info-card"><h3 data-i18n="info4_title">其他相关说明</h3><p data-i18n="info4_content"></p></div>
+        </div>
+        <div class="footer-note">© 2026 물리치료A WANG TIANLU 202217132 | Digital Health · Industrial Safety</div>
     </div>
 
+    <button class="float-download hide-in-pdf" onclick="downloadPDF()" title="PDF 다운로드">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+    </button>
+
     <script>
-        (function() {
-            const i18nData = {
-                zh: {
-                    appTitle: '肺癌CT影像智能分析系统',
-                    appSubtitle: 'AI辅助诊断 · 病变区域自动标注 · 病理特征分析',
-                    uploadTitle: '上传CT影像',
-                    uploadText: '点击或拖拽上传CT影像图片',
-                    uploadHint: '支持 JPG / PNG / DICOM截图 格式',
-                    noImage: '请上传CT影像图片以进行分析',
-                    analyzing: 'AI分析中',
-                    legendTitle: '图例：',
-                    legendHigh: '疑似恶性',
-                    legendMedium: '磨玻璃结节',
-                    legendLow: '钙化灶',
-                    legendFollow: '实性小结节',
-                    btnReset: '🔄 重新上传',
-                    btnAnalyze: '🔍 开始分析',
-                    btnPrint: '🖨️ 打印报告',
-                    resultTitle: '分析结果',
-                    noResult: '⬅️ 请先上传CT影像并点击分析',
-                    disclaimer: '⚠️ <strong>免责声明：</strong>本系统为AI模拟辅助工具，分析结果仅供学习参考，不能替代专业医师诊断。如有健康问题请及时就医。',
-                    totalLesions: '共检测到',
-                    totalLesionsUnit: '处病变区域',
-                    riskHighLabel: '高风险',
-                    riskMediumLabel: '中风险',
-                    riskLowLabel: '低风险',
-                    riskFollowLabel: '需随访',
-                    lesionTypeMalignant: '疑似恶性结节',
-                    lesionTypeGGO: '磨玻璃结节 (GGO)',
-                    lesionTypeCalcification: '钙化灶',
-                    lesionTypeSolid: '实性小结节',
-                    location: '位置',
-                    size: '大小',
-                    confidence: '置信度',
-                    recommendation: '建议',
-                    recMalignant: '⚠️ 高度关注，建议立即进行病理活检及多学科会诊',
-                    recGGO: '📋 建议3-6个月后复查CT，密切观察结节变化',
-                    recCalcification: '✅ 良性特征，建议年度常规随访即可',
-                    recSolid: '📋 建议6-12个月后复查，如增大需进一步检查',
-                    summaryTotal: '检测总数',
-                    summaryHighRisk: '高风险病变',
-                    summaryMediumRisk: '中风险病变',
-                    reportTitle: '📋 详细病理分析报告',
-                    dimensionNote: '（基于影像比例估算）',
-                    positionRightUpper: '右肺上部',
-                    positionRightLower: '右肺下部',
-                    positionLeftUpper: '左肺上部',
-                    positionLeftLower: '左肺下部',
-                    positionCentral: '纵隔区域'
-                },
-                ko: {
-                    appTitle: '폐암 CT 영상 분석 시스템',
-                    appSubtitle: 'AI 보조 진단 · 병변 영역 자동 표시 · 병리 특징 분석',
-                    uploadTitle: 'CT 영상 업로드',
-                    uploadText: '클릭 또는 드래그하여 CT 영상 업로드',
-                    uploadHint: 'JPG / PNG / DICOM 스크린샷 지원',
-                    noImage: 'CT 영상을 업로드하여 분석을 진행하세요',
-                    analyzing: 'AI 분석 중',
-                    legendTitle: '범례:',
-                    legendHigh: '악성 의심',
-                    legendMedium: '간유리 결절',
-                    legendLow: '석회화',
-                    legendFollow: '고형 소결절',
-                    btnReset: '🔄 다시 업로드',
-                    btnAnalyze: '🔍 분석 시작',
-                    btnPrint: '🖨️ 보고서 인쇄',
-                    resultTitle: '분석 결과',
-                    noResult: '⬅️ CT 영상을 업로드하고 분석을 시작하세요',
-                    disclaimer: '⚠️ <strong>면책 조항:</strong> 본 시스템은 AI 시뮬레이션 보조 도구로, 분석 결과는 학습 참고용이며 전문 의사의 진단을 대체할 수 없습니다.',
-                    totalLesions: '총',
-                    totalLesionsUnit: '개 병변 발견',
-                    riskHighLabel: '고위험',
-                    riskMediumLabel: '중간 위험',
-                    riskLowLabel: '저위험',
-                    riskFollowLabel: '추적 관찰',
-                    lesionTypeMalignant: '악성 의심 결절',
-                    lesionTypeGGO: '간유리 결절 (GGO)',
-                    lesionTypeCalcification: '석회화 병소',
-                    lesionTypeSolid: '고형 소결절',
-                    location: '위치',
-                    size: '크기',
-                    confidence: '신뢰도',
-                    recommendation: '권고사항',
-                    recMalignant: '⚠️ 높은 주의 필요, 즉시 조직 생검 및 다학제 협진 권장',
-                    recGGO: '📋 3-6개월 후 CT 재검사 권장, 결절 변화 면밀 관찰',
-                    recCalcification: '✅ 양성 소견, 연례 정기 추적 관찰 권장',
-                    recSolid: '📋 6-12개월 후 재검사 권장, 크기 증가 시 추가 검사 필요',
-                    summaryTotal: '총 발견',
-                    summaryHighRisk: '고위험 병변',
-                    summaryMediumRisk: '중간 위험 병변',
-                    reportTitle: '📋 상세 병리 분석 보고서',
-                    dimensionNote: '(영상 비율 기반 추정)',
-                    positionRightUpper: '우폐 상부',
-                    positionRightLower: '우폐 하부',
-                    positionLeftUpper: '좌폐 상부',
-                    positionLeftLower: '좌폐 하부',
-                    positionCentral: '종격동 영역'
+        const i18n = {
+            zh: {
+                brand_sub: '数字健康医疗 · 产业安全平台',
+                page_subtitle: '数字健康医疗产业安全管理系统',
+                download_btn: '下载PDF',
+                form_title: '📋 患者数据输入',
+                label_name: '姓名',
+                label_age: '年龄',
+                label_gender: '性别',
+                label_pain: '疼痛等级 (1-10)',
+                label_therapy: '治疗类型',
+                label_symptoms: '症状描述',
+                label_history: '既往病史',
+                btn_generate: '🔍 生成评估结果',
+                result_title: '📊 评估结果',
+                result_placeholder: '👈 请先输入患者数据并点击生成按钮',
+                info1_title: '📐 网站设计与开发方法',
+                info1_content: '本网站采用响应式Web设计，基于HTML5/CSS3/JS原生技术，集成html2pdf.js实现PDF导出。前端使用Flexbox与Grid布局，遵循MVVM模式，支持中韩双语无缝切换，代码模块化，注重维护性。',
+                info2_title: '⚙️ 主要功能介绍',
+                info2_list: [
+                    '患者信息录入：姓名、年龄、性别、疼痛等级等。',
+                    '治疗类型选择：运动、电疗、热冷疗、超声波、牵引、按摩、康复训练。',
+                    '智能安全评估：基于多维度数据自动生成产业安全风险等级。',
+                    '一键PDF报告：包含完整评估结果与系统说明。',
+                    '中韩双语界面：所有文本实时同步切换。'
+                ],
+                info3_title: '🎯 预期效果与应用价值',
+                info3_content: '提升物理治疗产业安全管理水平，辅助治疗师快速评估风险，优化个性化方案。为机构提供标准化记录与报告，推动数字健康医疗向智能化、安全化发展。',
+                info4_title: '📝 其他相关说明',
+                info4_content: '물리치료A课程项目，作者WANG TIANLU (202217132)。数据仅供演示，不构成医疗建议。实际应用需遵守HIPAA/GDPR等法规。评估基于预设规则，需结合专业判断。',
+                risk_low: '低风险',
+                risk_medium: '中风险',
+                risk_high: '高风险',
+                safety_good: '良好',
+                safety_moderate: '一般',
+                safety_poor: '需关注',
+                gender_male: '男',
+                gender_female: '女',
+                gender_other: '其他',
+                therapy_exercise: '运动疗法',
+                therapy_electro: '电疗',
+                therapy_thermal: '热疗/冷疗',
+                therapy_ultrasound: '超声波治疗',
+                therapy_traction: '牵引治疗',
+                therapy_massage: '按摩疗法',
+                therapy_rehab: '康复训练',
+                toast_generated: '✅ 评估结果已生成',
+                toast_pdf: '📄 PDF正在生成...',
+                toast_pdf_done: '✅ PDF下载完成',
+            },
+            ko: {
+                brand_sub: '디지털 헬스케어 · 산업안전 플랫폼',
+                page_subtitle: '디지털 헬스케어 산업안전 관리 시스템',
+                download_btn: 'PDF 다운로드',
+                form_title: '📋 환자 데이터 입력',
+                label_name: '이름',
+                label_age: '나이',
+                label_gender: '성별',
+                label_pain: '통증 등급 (1-10)',
+                label_therapy: '치료 유형',
+                label_symptoms: '증상 설명',
+                label_history: '과거 병력',
+                btn_generate: '🔍 평가 결과 생성',
+                result_title: '📊 평가 결과',
+                result_placeholder: '👈 환자 데이터를 입력하고 생성 버튼을 클릭하세요',
+                info1_title: '📐 웹사이트 설계 및 개발 방법',
+                info1_content: '반응형 웹 디자인, HTML5/CSS3/JS 기반, html2pdf.js로 PDF 내보내기. Flexbox/Grid 레이아웃, MVVM 패턴, 중한 이중 언어 지원.',
+                info2_title: '⚙️ 주요 기능',
+                info2_list: [
+                    '환자 정보 입력: 이름, 나이, 성별, 통증 등급',
+                    '치료 유형 선택: 운동, 전기, 온열, 초음파, 견인, 마사지, 재활',
+                    '스마트 안전 평가: 다차원 데이터 기반 산업안전 위험 등급 생성',
+                    '원클릭 PDF 보고서: 완전한 평가 결과와 시스템 설명 포함',
+                    '중국어/한국어 인터페이스: 모든 텍스트 실시간 동기화'
+                ],
+                info3_title: '🎯 기대 효과 및 응용 가치',
+                info3_content: '물리치료 산업안전 관리 수준 향상, 치료사의 빠른 위험 평가 지원, 개인화된 치료 최적화. 표준화된 기록과 보고서 제공.',
+                info4_title: '📝 기타 관련 사항',
+                info4_content: '물리치료A 과정 프로젝트, WANG TIANLU (202217132). 데이터는 시연용이며 의학적 조언이 아닙니다. 실제 사용 시 HIPAA/GDPR 준수 필요.',
+                risk_low: '저위험',
+                risk_medium: '중위험',
+                risk_high: '고위험',
+                safety_good: '양호',
+                safety_moderate: '보통',
+                safety_poor: '주의 필요',
+                gender_male: '남성',
+                gender_female: '여성',
+                gender_other: '기타',
+                therapy_exercise: '운동 요법',
+                therapy_electro: '전기 치료',
+                therapy_thermal: '온열·냉각 치료',
+                therapy_ultrasound: '초음파 치료',
+                therapy_traction: '견인 치료',
+                therapy_massage: '마사지 요법',
+                therapy_rehab: '재활 훈련',
+                toast_generated: '✅ 평가 결과 생성됨',
+                toast_pdf: '📄 PDF 생성 중...',
+                toast_pdf_done: '✅ PDF 다운로드 완료',
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            const dict = i18n[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (!dict[key]) return;
+                if (key === 'info2_list') {
+                    el.innerHTML = dict[key].map(item => `<li>${item}</li>`).join('');
+                } else if (el.tagName === 'UL') {
+                    // 可能还有其他列表
+                } else {
+                    el.textContent = dict[key];
                 }
-            };
+            });
 
-            let currentLang = 'zh';
+            // 重建性别和治疗类型下拉选项
+            const genderSelect = document.getElementById('patientGender');
+            const genderOptions = [
+                { value: '', text: lang === 'zh' ? '请选择' : '선택하세요' },
+                { value: 'male', text: dict.gender_male },
+                { value: 'female', text: dict.gender_female },
+                { value: 'other', text: dict.gender_other }
+            ];
+            genderSelect.innerHTML = genderOptions.map(o => `<option value="${o.value}">${o.text}</option>`).join('');
 
-            function t(key) {
-                return i18nData[currentLang][key] || key;
+            const therapySelect = document.getElementById('therapyType');
+            const therapyOptions = [
+                { value: '', text: lang === 'zh' ? '请选择' : '선택하세요' },
+                { value: 'exercise', text: dict.therapy_exercise },
+                { value: 'electro', text: dict.therapy_electro },
+                { value: 'thermal', text: dict.therapy_thermal },
+                { value: 'ultrasound', text: dict.therapy_ultrasound },
+                { value: 'traction', text: dict.therapy_traction },
+                { value: 'massage', text: dict.therapy_massage },
+                { value: 'rehab', text: dict.therapy_rehab }
+            ];
+            therapySelect.innerHTML = therapyOptions.map(o => `<option value="${o.value}">${o.text}</option>`).join('');
+
+            // 更新placeholder
+            document.getElementById('patientName').placeholder = lang === 'zh' ? '张三 / 홍길동' : '홍길동 / 张三';
+            document.getElementById('symptoms').placeholder = lang === 'zh' ? '请输入详细症状...' :
+                '증상을 입력하세요...';
+            document.getElementById('medicalHistory').placeholder = lang === 'zh' ? '예: 고혈압, 당뇨' :
+                '예: 고혈압, 당뇨';
+
+            // 如果已有结果，刷新结果区域
+            if (window._lastPatientData) {
+                displayResult(window._lastPatientData);
+            } else {
+                const resultArea = document.getElementById('resultArea');
+                if (!resultArea.classList.contains('has-data')) {
+                    resultArea.innerHTML = `<span>${dict.result_placeholder}</span>`;
+                }
             }
 
-            window.switchLanguage = function(lang) {
-                currentLang = lang;
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    if (i18nData[lang][key]) {
-                        if (i18nData[lang][key].includes('<strong>') || i18nData[lang][key].includes('<br>')) {
-                            el.innerHTML = i18nData[lang][key];
-                        } else {
-                            el.textContent = i18nData[lang][key];
-                        }
-                    }
-                });
-                if (currentImageData && lastDetectionResults) {
-                    updateResultPanel(lastDetectionResults);
-                }
-                const overlayText = document.querySelector('#analyzingOverlay .analyzing-text');
-                if (overlayText) overlayText.textContent = t('analyzing');
+            document.querySelectorAll('#langSwitch button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        document.getElementById('langSwitch').addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' && e.target.dataset.lang) {
+                applyLanguage(e.target.dataset.lang);
+            }
+        });
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('patientName').value.trim();
+            const age = parseInt(document.getElementById('patientAge').value, 10);
+            if (!name || isNaN(age) || age < 1 || age > 120) {
+                alert(currentLang === 'zh' ? '请填写有效的姓名和年龄' : '유효한 이름과 나이를 입력하세요');
+                return false;
+            }
+            const data = {
+                name,
+                age,
+                gender: document.getElementById('patientGender').value,
+                painLevel: parseInt(document.getElementById('painLevel').value, 10),
+                therapyType: document.getElementById('therapyType').value,
+                symptoms: document.getElementById('symptoms').value.trim(),
+                medicalHistory: document.getElementById('medicalHistory').value.trim(),
+                timestamp: new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'ko-KR')
             };
+            window._lastPatientData = data;
+            displayResult(data);
+            showToast(i18n[currentLang].toast_generated);
+            return false;
+        }
 
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    switchLanguage(this.getAttribute('data-lang'));
-                });
+        function displayResult(data) {
+            const dict = i18n[currentLang];
+            const score = data.painLevel + (data.age > 60 ? 3 : data.age > 40 ? 1 : 0) +
+                (data.medicalHistory && data.medicalHistory.length > 1 ? 2 : 0);
+            let riskLevel, riskClass, safety;
+            if (score <= 4) { riskLevel = dict.risk_low;
+                riskClass = 'badge-low';
+                safety = dict.safety_good; } else if (score <= 8) { riskLevel = dict.risk_medium;
+                riskClass = 'badge-medium';
+                safety = dict.safety_moderate; } else { riskLevel = dict.risk_high;
+                riskClass = 'badge-high';
+                safety = dict.safety_poor; }
+
+            const genderText = data.gender === 'male' ? dict.gender_male : data.gender === 'female' ? dict
+            .gender_female : dict.gender_other;
+            const therapyText = dict['therapy_' + data.therapyType] || data.therapyType;
+
+            const resultArea = document.getElementById('resultArea');
+            resultArea.classList.add('has-data');
+            resultArea.innerHTML = `
+                <div class="result-item"><strong>${currentLang==='zh'?'患者':'환자'}:</strong> ${escapeHTML(data.name)}</div>
+                <div class="result-item"><strong>${currentLang==='zh'?'年龄':'나이'}:</strong> ${data.age} | <strong>${currentLang==='zh'?'性别':'성별'}:</strong> ${genderText}</div>
+                <div class="result-item"><strong>${currentLang==='zh'?'疼痛等级':'통증 등급'}:</strong> ${data.painLevel}/10</div>
+                <div class="result-item"><strong>${currentLang==='zh'?'治疗类型':'치료 유형'}:</strong> ${therapyText}</div>
+                <div class="result-item"><strong>${currentLang==='zh'?'症状':'증상'}:</strong> ${escapeHTML(data.symptoms) || (currentLang==='zh'?'未填写':'미기입')}</div>
+                <div class="result-item"><strong>${currentLang==='zh'?'病史':'병력'}:</strong> ${escapeHTML(data.medicalHistory) || (currentLang==='zh'?'无':'없음')}</div>
+                <div class="result-item" style="margin-top:10px;border-top:2px solid #dfe6e9;padding-top:10px;">
+                    <strong>🔒 ${currentLang==='zh'?'产业安全风险':'산업안전 위험'}:</strong>
+                    <span class="badge-risk ${riskClass}">${riskLevel}</span>
+                </div>
+                <div class="result-item"><strong>🛡️ ${currentLang==='zh'?'安全状态':'안전 상태'}:</strong> ${safety}</div>
+                <div class="result-item"><strong>📅 ${currentLang==='zh'?'评估时间':'평가 시간'}:</strong> ${data.timestamp}</div>
+                <div class="result-item" style="color:#0066cc;font-weight:500;">${currentLang==='zh'?'⚠️ 本评估仅供参考，不构成医疗建议。':'⚠️ 본 평가는 참고용이며 의학적 조언이 아닙니다.'}</div>
+            `;
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function showToast(msg) {
+            const old = document.querySelector('.toast');
+            if (old) old.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function downloadPDF() {
+            showToast(i18n[currentLang].toast_pdf);
+            // 隐藏所有下载按钮
+            document.querySelectorAll('.hide-in-pdf').forEach(el => el.style.display = 'none');
+            const element = document.getElementById('pdfCaptureArea');
+            const opt = {
+                margin: [8, 10, 8, 10],
+                filename: `WANGTIANLU_202217132_${new Date().toISOString().slice(0,10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 2, backgroundColor: '#ffffff', logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast(i18n[currentLang].toast_pdf_done);
+                // 恢复按钮显示
+                document.querySelectorAll('.hide-in-pdf').forEach(el => el.style.display = '');
+            }).catch(() => {
+                window.print();
+                document.querySelectorAll('.hide-in-pdf').forEach(el => el.style.display = '');
             });
+        }
 
-            const uploadZone = document.getElementById('uploadZone');
-            const fileInput = document.getElementById('fileInput');
-            const mainCanvas = document.getElementById('mainCanvas');
-            const imageDisplayArea = document.getElementById('imageDisplayArea');
-            const noImagePlaceholder = document.getElementById('noImagePlaceholder');
-            const analyzingOverlay = document.getElementById('analyzingOverlay');
-            const legendBar = document.getElementById('legendBar');
-            const resultContent = document.getElementById('resultContent');
-            const btnAnalyze = document.getElementById('btnAnalyze');
-            const btnReset = document.getElementById('btnReset');
-            const btnPrint = document.getElementById('btnPrint');
-
-            let currentImageData = null;
-            let lastDetectionResults = null;
-            const ctx = mainCanvas.getContext('2d');
-
-            uploadZone.addEventListener('click', (e) => {
-                if (e.target !== fileInput) fileInput.click();
-            });
-            uploadZone.addEventListener('dragover', (e) => {
+        // 快捷键 Ctrl+S
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
-                uploadZone.classList.add('drag-over');
-            });
-            uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-            uploadZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadZone.classList.remove('drag-over');
-                if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
-            });
-            fileInput.addEventListener('change', () => {
-                if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
-            });
-
-            function handleFile(file) {
-                if (!file.type.match(/image\/(jpeg|png|webp|bmp|tiff)/)) {
-                    alert(currentLang === 'zh' ? '请上传有效的图片文件' : '유효한 이미지 파일을 업로드하세요');
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        currentImageData = {
-                            image: img,
-                            src: e.target.result,
-                            width: img.width,
-                            height: img.height
-                        };
-                        displayImage(img);
-                        btnAnalyze.style.display = 'inline-block';
-                        btnReset.style.display = 'inline-block';
-                        btnPrint.style.display = 'none';
-                        legendBar.style.display = 'none';
-                        resultContent.innerHTML = `<p style="color:#8899aa;text-align:center;padding:40px 20px;">${t('noResult')}</p>`;
-                        lastDetectionResults = null;
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+                downloadPDF();
             }
+        });
 
-            function displayImage(img) {
-                noImagePlaceholder.style.display = 'none';
-                mainCanvas.style.display = 'block';
-                analyzingOverlay.style.display = 'none';
-                const containerWidth = imageDisplayArea.clientWidth - 8;
-                const maxWidth = Math.min(containerWidth, 750);
-                const maxHeight = 520;
-                let drawWidth = img.width;
-                let drawHeight = img.height;
-                const ratio = img.width / img.height;
-                if (drawWidth > maxWidth) {
-                    drawWidth = maxWidth;
-                    drawHeight = drawWidth / ratio;
-                }
-                if (drawHeight > maxHeight) {
-                    drawHeight = maxHeight;
-                    drawWidth = drawHeight * ratio;
-                }
-                mainCanvas.width = Math.round(drawWidth);
-                mainCanvas.height = Math.round(drawHeight);
-                mainCanvas.style.width = drawWidth + 'px';
-                mainCanvas.style.height = drawHeight + 'px';
-                ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-                ctx.drawImage(img, 0, 0, drawWidth, drawHeight);
-                currentImageData.displayWidth = drawWidth;
-                currentImageData.displayHeight = drawHeight;
-                currentImageData.scaleX = drawWidth / img.width;
-                currentImageData.scaleY = drawHeight / img.height;
-            }
-
-            window.triggerAnalysis = function() {
-                if (!currentImageData) return;
-                analyzingOverlay.style.display = 'flex';
-                document.querySelector('#analyzingOverlay .analyzing-text').textContent = t('analyzing');
-                btnAnalyze.disabled = true;
-                btnAnalyze.style.opacity = '0.6';
-                legendBar.style.display = 'none';
-                const delay = 1800 + Math.random() * 1400;
-                setTimeout(() => {
-                    const lesions = detectLesionsFromImage();
-                    lastDetectionResults = lesions;
-                    redrawWithAnnotations(lesions);
-                    updateResultPanel(lesions);
-                    analyzingOverlay.style.display = 'none';
-                    btnAnalyze.disabled = false;
-                    btnAnalyze.style.opacity = '1';
-                    btnPrint.style.display = 'inline-block';
-                    legendBar.style.display = 'flex';
-                }, delay);
-            };
-
-            // 基于图像内容动态检测病变区域
-            function detectLesionsFromImage() {
-                const w = mainCanvas.width;
-                const h = mainCanvas.height;
-                const imageData = ctx.getImageData(0, 0, w, h);
-                const data = imageData.data;
-                // 划分网格，例如 8x6 个单元格
-                const gridCols = 8;
-                const gridRows = 6;
-                const cellW = Math.floor(w / gridCols);
-                const cellH = Math.floor(h / gridRows);
-                const cells = [];
-
-                for (let row = 0; row < gridRows; row++) {
-                    for (let col = 0; col < gridCols; col++) {
-                        let totalBrightness = 0;
-                        let count = 0;
-                        const startX = col * cellW;
-                        const startY = row * cellH;
-                        const endX = Math.min(startX + cellW, w);
-                        const endY = Math.min(startY + cellH, h);
-                        for (let y = startY; y < endY; y++) {
-                            for (let x = startX; x < endX; x++) {
-                                const idx = (y * w + x) * 4;
-                                const r = data[idx];
-                                const g = data[idx + 1];
-                                const b = data[idx + 2];
-                                // 加权灰度值 (标准亮度公式)
-                                const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-                                totalBrightness += gray;
-                                count++;
-                            }
-                        }
-                        const avgBrightness = totalBrightness / count;
-                        cells.push({
-                            row,
-                            col,
-                            x: startX,
-                            y: startY,
-                            w: endX - startX,
-                            h: endY - startY,
-                            avgBrightness
-                        });
-                    }
-                }
-
-                // 按亮度从高到低排序
-                cells.sort((a, b) => b.avgBrightness - a.avgBrightness);
-
-                // 选取亮度最高的4个网格作为病变候选，并过滤掉亮度过低的
-                const topCells = cells.filter(c => c.avgBrightness > 80).slice(0, 4);
-                if (topCells.length === 0) {
-                    // 如果没有足够亮的区域，随机选一个
-                    if (cells.length > 0) topCells.push(cells[Math.floor(Math.random() * cells.length)]);
-                }
-
-                const lesions = [];
-                const riskLevels = ['high', 'medium', 'low', 'follow'];
-                const typeMap = {
-                    high: { zh: '疑似恶性结节', ko: '악성 의심 결절', recZh: '⚠️ 高度关注，建议立即进行病理活检及多学科会诊', recKo: '⚠️ 높은 주의 필요, 즉시 조직 생검 및 다학제 협진 권장' },
-                    medium: { zh: '磨玻璃结节 (GGO)', ko: '간유리 결절 (GGO)', recZh: '📋 建议3-6个月后复查CT，密切观察结节变化', recKo: '📋 3-6개월 후 CT 재검사 권장, 결절 변화 면밀 관찰' },
-                    low: { zh: '钙化灶', ko: '석회화 병소', recZh: '✅ 良性特征，建议年度常规随访即可', recKo: '✅ 양성 소견, 연례 정기 추적 관찰 권장' },
-                    follow: { zh: '实性小结节', ko: '고형 소결절', recZh: '📋 建议6-12个月后复查，如增大需进一步检查', recKo: '📋 6-12개월 후 재검사 권장, 크기 증가 시 추가 검사 필요' }
-                };
-
-                topCells.forEach((cell, index) => {
-                    const risk = riskLevels[index] || 'follow';
-                    const typeInfo = typeMap[risk];
-                    // 位置描述
-                    const centerX = cell.x + cell.w / 2;
-                    const centerY = cell.y + cell.h / 2;
-                    const isLeft = centerX < w / 2;
-                    const isUpper = centerY < h / 3 ? true : (centerY > 2 * h / 3 ? false : 'mid');
-                    let locZh, locKo;
-                    if (isUpper === true) {
-                        locZh = isLeft ? '左肺上部' : '右肺上部';
-                        locKo = isLeft ? '좌폐 상부' : '우폐 상부';
-                    } else if (isUpper === false) {
-                        locZh = isLeft ? '左肺下部' : '右肺下部';
-                        locKo = isLeft ? '좌폐 하부' : '우폐 하부';
-                    } else {
-                        locZh = isLeft ? '左肺中部' : '右肺中部';
-                        locKo = isLeft ? '좌폐 중부' : '우폐 중부';
-                    }
-                    // 大小估算：假设图像宽度对应30cm，计算毫米
-                    const mmWidth = Math.round((cell.w / w) * 300);
-                    const mmHeight = Math.round((cell.h / h) * 300);
-                    const confidence = (70 + Math.random() * 25).toFixed(1) + '%';
-
-                    lesions.push({
-                        id: index + 1,
-                        type: risk,
-                        x: cell.x,
-                        y: cell.y,
-                        w: cell.w,
-                        h: cell.h,
-                        labelZh: typeInfo.zh,
-                        labelKo: typeInfo.ko,
-                        riskLevel: risk,
-                        sizeMm: `${mmWidth}×${mmHeight}`,
-                        confidence: confidence,
-                        locationZh: locZh,
-                        locationKo: locKo,
-                        recZh: typeInfo.recZh,
-                        recKo: typeInfo.recKo
-                    });
-                });
-
-                return lesions;
-            }
-
-            function redrawWithAnnotations(lesions) {
-                const img = currentImageData.image;
-                const dw = currentImageData.displayWidth;
-                const dh = currentImageData.displayHeight;
-                ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-                ctx.drawImage(img, 0, 0, dw, dh);
-
-                const colors = {
-                    high: { stroke: '#e74c3c', fill: 'rgba(231,76,60,0.22)', lineWidth: 3.5, glowColor: 'rgba(231,76,60,0.7)' },
-                    medium: { stroke: '#e67e22', fill: 'rgba(230,126,34,0.18)', lineWidth: 2.8, glowColor: 'rgba(230,126,34,0.55)' },
-                    low: { stroke: '#2980b9', fill: 'rgba(41,128,185,0.15)', lineWidth: 2.2, glowColor: 'rgba(41,128,185,0.45)' },
-                    follow: { stroke: '#d4a017', fill: 'rgba(212,160,23,0.18)', lineWidth: 2.2, glowColor: 'rgba(212,160,23,0.5)' }
-                };
-
-                lesions.forEach(l => {
-                    const colorScheme = colors[l.riskLevel];
-                    const x = l.x;
-                    const y = l.y;
-                    const bw = l.w;
-                    const bh = l.h;
-
-                    ctx.save();
-                    ctx.shadowColor = colorScheme.glowColor;
-                    ctx.shadowBlur = 14;
-                    ctx.strokeStyle = colorScheme.stroke;
-                    ctx.lineWidth = colorScheme.lineWidth;
-                    ctx.strokeRect(x, y, bw, bh);
-                    ctx.shadowBlur = 0;
-                    ctx.restore();
-
-                    ctx.fillStyle = colorScheme.fill;
-                    ctx.fillRect(x, y, bw, bh);
-                    ctx.strokeStyle = colorScheme.stroke;
-                    ctx.lineWidth = colorScheme.lineWidth;
-                    ctx.strokeRect(x, y, bw, bh);
-
-                    const cornerLen = Math.min(bw, bh) * 0.3;
-                    ctx.strokeStyle = colorScheme.stroke;
-                    ctx.lineWidth = colorScheme.lineWidth + 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(x, y + cornerLen);
-                    ctx.lineTo(x, y);
-                    ctx.lineTo(x + cornerLen, y);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(x + bw - cornerLen, y);
-                    ctx.lineTo(x + bw, y);
-                    ctx.lineTo(x + bw, y + cornerLen);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(x, y + bh - cornerLen);
-                    ctx.lineTo(x, y + bh);
-                    ctx.lineTo(x + cornerLen, y + bh);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(x + bw - cornerLen, y + bh);
-                    ctx.lineTo(x + bw, y + bh);
-                    ctx.lineTo(x + bw, y + bh - cornerLen);
-                    ctx.stroke();
-
-                    const shortLabel = currentLang === 'zh' ?
-                        (l.riskLevel === 'high' ? '疑似恶性' : l.riskLevel === 'medium' ? 'GGO' : l.riskLevel === 'low' ? '钙化' : '实性结节') :
-                        (l.riskLevel === 'high' ? '악성의심' : l.riskLevel === 'medium' ? 'GGO' : l.riskLevel === 'low' ? '석회화' : '고형결절');
-                    const tagText = `#${l.id} ${shortLabel}`;
-                    ctx.font = 'bold 13px "PingFang SC","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
-                    const textWidth = ctx.measureText(tagText).width;
-                    const textHeight = 18;
-                    const tagX = x;
-                    const tagY = y - textHeight - 6;
-                    const bgColor = l.riskLevel === 'high' ? '#e74c3c' : l.riskLevel === 'medium' ? '#e67e22' : l.riskLevel === 'low' ? '#2980b9' : '#c8960e';
-                    ctx.fillStyle = bgColor;
-                    ctx.beginPath();
-                    ctx.roundRect(tagX - 5, tagY - 2, textWidth + 10, textHeight + 6, 4);
-                    ctx.fill();
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(tagText, tagX, tagY + textHeight - 3);
-
-                    const confText = l.confidence;
-                    const confW = ctx.measureText(confText).width;
-                    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                    ctx.beginPath();
-                    ctx.roundRect(x + bw - confW - 10, y + bh + 3, confW + 10, 17, 3);
-                    ctx.fill();
-                    ctx.fillStyle = '#fff';
-                    ctx.font = '11px "PingFang SC","Microsoft YaHei","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
-                    ctx.fillText(confText, x + bw - confW - 5, y + bh + 15);
-                });
-            }
-
-            function updateResultPanel(lesions) {
-                const highCount = lesions.filter(l => l.riskLevel === 'high').length;
-                const mediumCount = lesions.filter(l => l.riskLevel === 'medium').length;
-                let html = `<div class="result-summary">
-                    <div class="summary-badge danger"><span class="num">${lesions.length}</span><span class="lbl">${t('summaryTotal')}</span></div>`;
-                if (highCount > 0) html += `<div class="summary-badge danger"><span class="num">${highCount}</span><span class="lbl">${t('summaryHighRisk')}</span></div>`;
-                if (mediumCount > 0) html += `<div class="summary-badge warning"><span class="num">${mediumCount}</span><span class="lbl">${t('summaryMediumRisk')}</span></div>`;
-                html += `<div class="summary-badge info"><span class="num">${lesions.filter(l=>l.riskLevel==='low').length}</span><span class="lbl">${t('riskLowLabel')}</span></div></div>`;
-                html += `<p style="font-weight:700;margin-bottom:10px;color:#1a3c5e;font-size:15px;">${t('reportTitle')}</p>`;
-
-                lesions.forEach(l => {
-                    const riskClass = l.riskLevel === 'high' ? 'risk-high' : l.riskLevel === 'medium' ? 'risk-medium' : l.riskLevel === 'low' ? 'risk-low' : 'risk-follow';
-                    const badgeClass = l.riskLevel === 'high' ? 'badge-high' : l.riskLevel === 'medium' ? 'badge-medium' : l.riskLevel === 'low' ? 'badge-low' : 'badge-follow';
-                    const riskLabel = t('risk' + l.riskLevel.charAt(0).toUpperCase() + l.riskLevel.slice(1) + 'Label');
-                    const lesionName = currentLang === 'zh' ? l.labelZh : l.labelKo;
-                    const locationName = currentLang === 'zh' ? l.locationZh : l.locationKo;
-                    const recText = currentLang === 'zh' ? l.recZh : l.recKo;
-                    html += `
-                    <div class="lesion-detail-card ${riskClass}">
-                        <div class="lesion-header">
-                            <span class="lesion-name">🔴 #${l.id} ${lesionName}</span>
-                            <span class="lesion-badge ${badgeClass}">${riskLabel}</span>
-                        </div>
-                        <div class="lesion-info">
-                            <span>📍 ${t('location')}: <span class="val">${locationName}</span></span>
-                            <span>📏 ${t('size')}: <span class="val">${l.sizeMm} mm</span> ${t('dimensionNote')}</span>
-                            <span>🎯 ${t('confidence')}: <span class="val">${l.confidence}</span></span>
-                        </div>
-                        <div class="lesion-info" style="margin-top:4px;">
-                            💡 <strong>${t('recommendation')}:</strong> ${recText}
-                        </div>
-                    </div>`;
-                });
-                resultContent.innerHTML = html;
-            }
-
-            window.resetAll = function() {
-                currentImageData = null;
-                lastDetectionResults = null;
-                mainCanvas.style.display = 'none';
-                noImagePlaceholder.style.display = '';
-                analyzingOverlay.style.display = 'none';
-                legendBar.style.display = 'none';
-                btnAnalyze.style.display = 'none';
-                btnReset.style.display = 'none';
-                btnPrint.style.display = 'none';
-                fileInput.value = '';
-                ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-                resultContent.innerHTML = `<p style="color:#8899aa;text-align:center;padding:40px 20px;">${t('noResult')}</p>`;
-                btnAnalyze.disabled = false;
-                btnAnalyze.style.opacity = '1';
-            };
-
-            window.addEventListener('resize', () => {
-                if (currentImageData && analyzingOverlay.style.display === 'none') {
-                    displayImage(currentImageData.image);
-                    if (lastDetectionResults) redrawWithAnnotations(lastDetectionResults);
-                }
-            });
-
-            btnAnalyze.style.display = 'none';
-            btnReset.style.display = 'none';
-            btnPrint.style.display = 'none';
-            legendBar.style.display = 'none';
-        })();
+        // 初始化语言
+        applyLanguage('zh');
     </script>
 </body>
 </html>
-```
